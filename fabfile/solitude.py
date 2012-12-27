@@ -2,7 +2,7 @@ from functools import partial
 
 from fabric.api import task
 
-from . import ec2
+from mozawsdeploy import ec2
 
 
 AMAZON_AMI = 'ami-2a31bf1a'
