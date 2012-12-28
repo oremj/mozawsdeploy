@@ -1,3 +1,5 @@
+import os
+
 from boto.ec2 import connect_to_region
 
 from . import gen_user_data
