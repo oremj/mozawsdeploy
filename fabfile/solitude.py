@@ -14,6 +14,7 @@ create_server = partial(ec2.create_server, app='solitude', region=REGION)
 @task
 def create_web(env, instance_type='m1.small'):
     """
+    args: env, instance_type
     This function will create the "golden master" ami for solitude web servers.
     TODO: needs to user_data to puppetize server
     """
