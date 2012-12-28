@@ -4,8 +4,10 @@ import sys
 
 import yaml
 
+from mozawsdeploy import configure
 from mozawsdeploy.puppet import create_node_yaml
 
 fqdn = sys.argv[1]
 
+configure()
 print create_node_yaml(fqdn)
