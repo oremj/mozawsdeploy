@@ -14,3 +14,4 @@ def configure(config_file=None):
         ec2_config.aws_secret_access_key = conf.get('awsdeploy',
                                                     'aws_secret_access_key')
         ec2_config.region = conf.get('awsdeploy', 'region')
+        ec2_config.puppet_ip = conf.get('awsdeploy', 'puppet_ip')
