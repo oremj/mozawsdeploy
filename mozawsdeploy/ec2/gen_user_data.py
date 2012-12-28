@@ -18,7 +18,7 @@ def pyrepo_install(pkgs):
 
 
 def add_host(ip, host):
-    return '%s %s >> /etc/hosts' % (ip, host)
+    return 'echo "%s %s" >> /etc/hosts' % (ip, host)
 
 
 def run_puppet():
