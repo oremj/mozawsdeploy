@@ -1,7 +1,7 @@
 import os
 from ConfigParser import SafeConfigParser
 
-from . import ec2.config
+from .ec2 import config as ec2_config
 
 def configure(config_file=None):
     if not config_file:
@@ -9,7 +9,8 @@ def configure(config_file=None):
 
     conf = SafeConfigParser() 
     if conf.read(config_file):
-        ec2.config.aws_access_key_id = conf.get('awsdeploy',
+        ec2_config.aws_access_key_id = conf.get('awsdeploy',
                                                 'aws_access_key_id')
-        ec2.config.aws_secret_key = conf.get('awsdeploy', 'aws_secret_key')
-        ec2.config.region = conf.get('awsdeploy', 'region')
+        ec2_config.aws_secret_access_key = conf.get('awsdeploy',
+                                                    'aws_secret_access_key')
+        ec2_config.region = conf.get('awsdeploy', 'region')
