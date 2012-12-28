@@ -1,4 +1,4 @@
-from setuptools import setup
+from distutils.core import setup
 
 
 setup(
@@ -7,5 +7,6 @@ setup(
     description='Deploy tools for AWS',
     author='Jeremy Orem',
     author_email='oremj@mozilla.com',
+    scripts=['scripts/puppet/lookup.py'],
     packages=['mozawsdeploy']
 )
