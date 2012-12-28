@@ -7,6 +7,6 @@ setup(
     description='Deploy tools for AWS',
     author='Jeremy Orem',
     author_email='oremj@mozilla.com',
-    scripts=['scripts/puppet/lookup.py'],
+    scripts=['scripts/puppet/puppet_aws_lookup'],
     packages=['mozawsdeploy']
 )
