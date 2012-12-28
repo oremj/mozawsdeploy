@@ -6,9 +6,8 @@ from mozawsdeploy import ec2
 
 
 AMAZON_AMI = 'ami-2a31bf1a'
-REGION = 'us-west-2'
 
-create_server = partial(ec2.create_server, app='solitude', region=REGION)
+create_server = partial(ec2.create_server, app='solitude')
 
 
 @task
@@ -30,6 +29,6 @@ def create_rabbitmq(env, instance_type='m1.small'):
     This function will create the "golden master" ami for solitude web servers.
     TODO: needs to user_data to puppetize server
     """
-    create_server('rabbit', server_type='rabbitmq', env=env, ami=AMAZON_AMI,
+    create_server('rabbitmq', server_type='rabbitmq', env=env, ami=AMAZON_AMI,
                   security_groups=['solitude-base-%s' % env,
                                    'solitude-rabbitmq-%s' % env])
