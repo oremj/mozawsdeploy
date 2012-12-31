@@ -1,4 +1,5 @@
 import os
+import sys
 
 from boto.rds import connect_to_region
 
@@ -25,6 +26,18 @@ def create_rds(rds_id, db_name, username, password, engine='MySQL',
                         master_password=password,
                         db_name=db_name,
                         param_group=param_group,
+                        security_groups=security_groups,
                         multi_az=multi_az,
                         engine_version='5.5.27',
                         character_set_name='UTF-8',)
+
+def create_replica(rds_id, master_rds_id, server_type='db.m1.small'):
+    c = get_connection()
+    try:
+        if c.get_all_dbinstances(instance_id=master_rds_id):
+            c.create_dbinstance_read_replica(id=rds_id,
+                                             source_id=master_rds_id,
+                                             instance_class=server_type,
+                                             )
+    except:
+        print sys.exc_info()
