@@ -14,11 +14,11 @@ def get_connection():
 
 
 def create_rds(rds_id, db_name, username, password, engine='MySQL',
-               allocate_storage='10', server_type='db.m1.small', multi_az=True,
-               param_group=None, security_groups=None):
+               allocated_storage='10', server_type='db.m1.small',
+               multi_az=True, param_group=None, security_groups=None):
     c = get_connection()
     c.create_dbinstance(id=rds_id,
-                        allocated_storage=allocate_storage,
+                        allocated_storage=allocated_storage,
                         instance_class=server_type,
                         engine=engine,
                         master_username=username,
