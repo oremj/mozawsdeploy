@@ -31,6 +31,7 @@ def create_rds(rds_id, db_name, username, password, engine='MySQL',
                         engine_version='5.5.27',
                         character_set_name='UTF-8',)
 
+
 def create_replica(rds_id, master_rds_id, server_type='db.m1.small'):
     c = get_connection()
     try:
