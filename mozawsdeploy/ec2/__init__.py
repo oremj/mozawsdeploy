@@ -3,7 +3,7 @@ import os
 from boto.ec2 import connect_to_region
 
 from . import gen_user_data
-from . import config
+from .. import config
 
 
 def get_connection():
