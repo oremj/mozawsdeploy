@@ -1,6 +1,9 @@
+import os
+import re
+import time
 from functools import partial
 
-from fabric.api import task
+from fabric.api import lcd, local, task
 
 from mozawsdeploy import ec2, rds
 
@@ -69,3 +72,36 @@ def create_database_replica(env, instance_type='db.m1.small'):
     rds_id = "solitude-replica-%s" % env
     master_rds_id = "solitude-master-%s" % env
     rds.create_replica(rds_id, master_rds_id, server_type=instance_type)
+
+
+@task
+def build_release(project_dir, ref):
+    """Build release. This assumes puppet has placed settings in /settings"""
+    release_time = time.time()
+    release_dir = os.path.join(project_dir, 'solitude-%d-%s' %
+                               (release_time,
+                                re.sub('[^A-z0-9]', '.', ref)))
+
+    local('mkdir %s' % release_dir)
+    local('git clone git://github.com/mozilla/solitude.git %s/solitude'
+          % release_dir)
+    with lcd('%s/solitude' % release_dir):
+        local('git reset --hard %s' % ref)
+
+    local('virtualenv --distribute --never-download %s/venv' % release_dir)
+    local('%s/venv/bin/pip install --exists-action=w --no-deps '
+          '--no-index --download-cache=/tmp/pip-cache '
+          '-f https://pyrepo.addons.mozilla.org '
+          '-r %s/solitude/requirements/prod.txt' %
+          (release_dir, release_dir))
+    local('rm -f %s/venv/lib/python2.6/no-global-site-packages.txt' %
+          release_dir)
+    local('%s/venv/bin/python /usr/bin/virtualenv --relocatable %s/venv' %
+          (release_dir, release_dir))
+
+    with lcd(project_dir):
+        local('ln -snf %s/solitude solitude' % release_dir)
+        local('ln -snf %s/venv venv' % release_dir)
+
+    local('cp %s/settings/local.py %s/solitude/solitude/settings/local.py' %
+          (project_dir, project_dir))
