@@ -22,7 +22,7 @@ def create_web(env, instance_type='m1.small', count=1):
 
     count = int(count)
     instances = create_server('web', server_type='web', env=env,
-                              ami=AMAZON_AMI, count=count
+                              ami=AMAZON_AMI, count=count,
                               security_groups=['solitude-base-%s' % env,
                                                'solitude-web-%s' % env])
 
