@@ -99,9 +99,10 @@ def build_release(project_dir, ref):
     local('%s/venv/bin/python /usr/bin/virtualenv --relocatable %s/venv' %
           (release_dir, release_dir))
 
+    local('cp %s/settings/local.py %s/solitude/solitude/settings/local.py' %
+          (project_dir, release_dir))
+
     with lcd(project_dir):
         local('ln -snf %s/solitude solitude' % release_dir)
         local('ln -snf %s/venv venv' % release_dir)
 
-    local('cp %s/settings/local.py %s/solitude/solitude/settings/local.py' %
-          (project_dir, project_dir))
