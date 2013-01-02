@@ -30,6 +30,16 @@ def create_web(env, instance_type='m1.small', count=1):
     elb_conn.register_instances('solitude-%s' % env, [i.id for i in instances])
 
 
+@task create_syslog(env, instance_type='m1.small'):
+    """
+    args: env, instance_type
+    """
+    instances = create_server('syslog', server_type='syslog', env=env,
+                              ami=AMAZON_AMI,
+                              security_groups=['solitude-base-%s' % env,
+                                               'solitude-syslog-%s' % env])
+
+
 @task
 def create_celery(env, instance_type='m1.small'):
     """
