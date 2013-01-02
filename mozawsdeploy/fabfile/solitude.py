@@ -30,7 +30,8 @@ def create_web(env, instance_type='m1.small', count=1):
     elb_conn.register_instances('solitude-%s' % env, [i.id for i in instances])
 
 
-@task create_syslog(env, instance_type='m1.small'):
+@task
+def create_syslog(env, instance_type='m1.small'):
     """
     args: env, instance_type
     """
