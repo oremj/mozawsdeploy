@@ -14,13 +14,15 @@ create_server = partial(ec2.create_server, app='solitude')
 
 
 @task
-def create_web(env, instance_type='m1.small'):
+def create_web(env, instance_type='m1.small', count=1):
     """
     args: env, instance_type
     This function will create the "golden master" ami for solitude web servers.
     """
+
+    count = int(count)
     instances = create_server('web', server_type='web', env=env,
-                              ami=AMAZON_AMI,
+                              ami=AMAZON_AMI, count=count
                               security_groups=['solitude-base-%s' % env,
                                                'solitude-web-%s' % env])
 
