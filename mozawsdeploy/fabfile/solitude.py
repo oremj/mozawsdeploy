@@ -25,7 +25,7 @@ def create_web(env, instance_type='m1.small'):
                                                'solitude-web-%s' % env])
 
     elb_conn = ec2.get_elb_connection()
-    elb_conn.register_instances('solitude-%s', [i.id for i in instances])
+    elb_conn.register_instances('solitude-%s' % env, [i.id for i in instances])
 
 
 @task
