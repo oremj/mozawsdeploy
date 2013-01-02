@@ -1,4 +1,5 @@
 import os
+import time
 
 from boto.ec2 import connect_to_region
 
@@ -40,6 +41,7 @@ def create_server(name, app, server_type, env, ami,
     res = c.run_instances(ami, key_name=key_name,
                           security_groups=security_groups, user_data=userdata)
 
+    time.sleep(1)  # sleep to decrease chances of instance ID does not exist
     for i in res.instances:
         i.add_tag('Name', name)
         i.add_tag('App', app)
