@@ -1,7 +1,7 @@
 import os
 import time
 
-from boto.ec2 import connect_to_region
+from boto.ec2 import connect_to_region, elb
 
 from . import gen_user_data
 from .. import config
@@ -11,6 +11,14 @@ def get_connection():
     c = connect_to_region(config.region,
                           aws_access_key_id=config.aws_access_key_id,
                           aws_secret_access_key=config.aws_secret_access_key)
+
+    return c
+
+
+def get_elb_connection():
+    c = elb.connect_to_region(config.region,
+                              aws_access_key_id=config.aws_access_key_id,
+                              aws_secret_access_key=config.aws_secret_access_key)
 
     return c
 
