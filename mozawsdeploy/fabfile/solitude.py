@@ -53,6 +53,7 @@ def create_celery(env, instance_type='m1.small'):
                                    'solitude-celery-%s' % env])
 
 
+@task
 def create_sentry(env, instance_type='m1.small'):
     """
     args: env, instance_type
