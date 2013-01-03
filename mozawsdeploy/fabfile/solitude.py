@@ -53,6 +53,17 @@ def create_celery(env, instance_type='m1.small'):
                                    'solitude-celery-%s' % env])
 
 
+def create_sentry(env, instance_type='m1.small'):
+    """
+    args: env, instance_type
+    This function will create the "golden master" ami for solitude web servers.
+    TODO: needs to user_data to puppetize server
+    """
+    create_server('sentry', server_type='sentry', env=env, ami=AMAZON_AMI,
+                  security_groups=['solitude-base-%s' % env,
+                                   'solitude-sentry-%s' % env])
+
+
 @task
 def create_rabbitmq(env, instance_type='m1.small'):
     """
@@ -121,4 +132,3 @@ def build_release(project_dir, ref):
     with lcd(project_dir):
         local('ln -snf %s/solitude solitude' % release_dir)
         local('ln -snf %s/venv venv' % release_dir)
-
