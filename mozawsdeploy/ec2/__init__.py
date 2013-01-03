@@ -34,7 +34,7 @@ def get_instance(filters):
 
 
 def create_server(name, app, server_type, env, ami,
-                  security_groups, userdata=None,
+                  security_groups, userdata=None, subnet_id=config.subnet_id,
                   count=1, key_name=None):
 
     if not userdata:
@@ -49,7 +49,7 @@ def create_server(name, app, server_type, env, ami,
     c = get_connection()
     res = c.run_instances(ami, key_name=key_name, min_count=count,
                           max_count=count, security_groups=security_groups,
-                          user_data=userdata)
+                          user_data=userdata, subnet_id=subnet_id)
 
     time.sleep(1)  # sleep to decrease chances of instance ID does not exist
     for i in res.instances:
