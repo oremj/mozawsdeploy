@@ -30,12 +30,12 @@ def get_security_group_ids(security_groups):
     return [i.id for i in sg]
 
 
-def create_security_groups(security_groups, vpc_id=config.vpc_id):
+def create_security_groups(security_groups):
     c = get_connection()
 
     for sg in security_groups:
         desc = re.sub('-', ' ', sg)
-        c.create_security_group(sg, desc, vpc_id)
+        c.create_security_group(sg, desc, config.vpc_id)
 
 
 def get_instance(instance_ids=None, filters=None):
@@ -51,7 +51,7 @@ def get_instance(instance_ids=None, filters=None):
 
 def create_server(name, app, server_type, env, ami,
                   security_groups=None, userdata=None,
-                  subnet_id=config.subnet_id, count=1, key_name=None):
+                  count=1, key_name=None):
 
     security_group_ids = get_security_group_ids(security_groups)
 
@@ -68,7 +68,7 @@ def create_server(name, app, server_type, env, ami,
     res = c.run_instances(ami, key_name=key_name, min_count=count,
                           max_count=count,
                           security_group_ids=security_group_ids,
-                          user_data=userdata, subnet_id=subnet_id)
+                          user_data=userdata, subnet_id=config.subnet_id)
 
     time.sleep(1)  # sleep to decrease chances of instance ID does not exist
     for i in res.instances:
