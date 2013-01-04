@@ -23,10 +23,11 @@ def get_elb_connection():
     return c
 
 
-def get_instance(filters):
+def get_instance(instance_ids=None, filters=None):
     """Returns the first instance returned by filters"""
     c = get_connection()
-    reservations = c.get_all_instances(filters=filters)
+    reservations = c.get_all_instances(instance_ids=instance_ids,
+                                       filters=filters)
 
     for r in reservations:
         for i in r.instances:

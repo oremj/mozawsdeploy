@@ -4,7 +4,7 @@ from .ec2 import get_instance
 
 
 def create_node_yaml(fqdn):
-    i = get_instance(filters={'private_dns_name': fqdn})
+    i = get_instance(instance_ids=[fqdn])
     if not i:
         return ''
     tclass = '%s-private::%s::%s' % (i.tags['App'],
