@@ -15,3 +15,4 @@ def configure(config_file=None):
                                                 'aws_secret_access_key')
         config.region = conf.get('awsdeploy', 'region')
         config.puppet_ip = conf.get('awsdeploy', 'puppet_ip')
+        config.subnet_id = conf.get('awsdeploy', 'subnet_id')
