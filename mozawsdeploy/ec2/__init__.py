@@ -23,6 +23,12 @@ def get_elb_connection():
     return c
 
 
+def get_security_group_ids(security_groups):
+    c = get_connection()
+    sg = c.get_all_security_groups(filters={'group-name': security_groups})
+    return [i.id for i in sg]
+
+
 def get_instance(instance_ids=None, filters=None):
     """Returns the first instance returned by filters"""
     c = get_connection()
@@ -35,9 +41,10 @@ def get_instance(instance_ids=None, filters=None):
 
 
 def create_server(name, app, server_type, env, ami,
-                  security_groups=None, security_group_ids=None, 
-                  userdata=None, subnet_id=config.subnet_id,
-                  count=1, key_name=None):
+                  security_groups=None, userdata=None,
+                  subnet_id=config.subnet_id, count=1, key_name=None):
+
+    security_group_ids = get_security_group_ids(security_groups)
 
     if not userdata:
         userdata = [gen_user_data.init(),
@@ -50,7 +57,7 @@ def create_server(name, app, server_type, env, ami,
 
     c = get_connection()
     res = c.run_instances(ami, key_name=key_name, min_count=count,
-                          max_count=count, security_groups=security_groups,
+                          max_count=count,
                           security_group_ids=security_group_ids,
                           user_data=userdata, subnet_id=subnet_id)
 
