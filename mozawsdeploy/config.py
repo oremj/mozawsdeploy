@@ -6,3 +6,4 @@ aws_secret_access_key = None
 puppet_ip = None
 region = 'us-west-2'
 subnet_id = None
+vpc_id = None

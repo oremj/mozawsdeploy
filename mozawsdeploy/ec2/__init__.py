@@ -1,5 +1,6 @@
 import os
 import time
+import re
 
 from boto.ec2 import connect_to_region, elb
 
@@ -27,6 +28,14 @@ def get_security_group_ids(security_groups):
     c = get_connection()
     sg = c.get_all_security_groups(filters={'group-name': security_groups})
     return [i.id for i in sg]
+
+
+def create_security_groups(security_groups, vpc_id=config.vpc_id):
+    c = get_connection()
+
+    for sg in security_groups:
+        desc = re.sub('-', ' ', sg)
+        c.create_security_group(sg, desc, vpc_id)
 
 
 def get_instance(instance_ids=None, filters=None):
