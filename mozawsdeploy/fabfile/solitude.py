@@ -88,6 +88,7 @@ def create_database(env, password, instance_type='db.m1.small'):
     username = db_name
     rds.create_rds(rds_id, db_name, username, password,
                    server_type=instance_type, param_group='solitude-mysql55',
+                   db_subnet_group_name='solitude-db-%s' % env,
                    security_groups=['solitude-db-write-%s' % env])
 
 

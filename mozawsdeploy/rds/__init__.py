@@ -16,7 +16,8 @@ def get_connection():
 
 def create_rds(rds_id, db_name, username, password, engine='MySQL',
                allocated_storage='10', server_type='db.m1.small',
-               multi_az=True, param_group=None, security_groups=None):
+               db_subnet_group_name=None, multi_az=True,
+               param_group=None, security_groups=None):
     c = get_connection()
     c.create_dbinstance(id=rds_id,
                         allocated_storage=allocated_storage,
@@ -25,6 +26,7 @@ def create_rds(rds_id, db_name, username, password, engine='MySQL',
                         master_username=username,
                         master_password=password,
                         db_name=db_name,
+                        db_subnet_group_name=db_subnet_group_name,
                         param_group=param_group,
                         security_groups=security_groups,
                         multi_az=multi_az,
