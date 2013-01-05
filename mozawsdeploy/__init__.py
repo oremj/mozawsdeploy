@@ -3,11 +3,12 @@ from ConfigParser import SafeConfigParser
 
 from . import config
 
+
 def configure(config_file=None):
     if not config_file:
         config_file = ['/etc/awsdeploy', os.path.expanduser('~/.awsconfig')]
 
-    conf = SafeConfigParser() 
+    conf = SafeConfigParser()
     if conf.read(config_file):
         config.aws_access_key_id = conf.get('awsdeploy',
                                             'aws_access_key_id')

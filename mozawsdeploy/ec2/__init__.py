@@ -27,7 +27,7 @@ def get_elb_connection():
 def get_security_group_ids(security_groups):
     c = get_connection()
     sg = c.get_all_security_groups(filters={'group-name': security_groups})
-    return [i.id for i in sg]
+    return [i.id for i in sg if i.vpc_id == config.vpc_id]
 
 
 def create_security_groups(security_groups):
@@ -53,7 +53,10 @@ def create_server(name, app, server_type, env, ami,
                   security_groups=None, userdata=None,
                   count=1, key_name=None):
 
-    security_group_ids = get_security_group_ids(security_groups)
+    if security_groups:
+        security_group_ids = get_security_group_ids(security_groups)
+    else:
+        security_group_ids = None
 
     if not userdata:
         userdata = [gen_user_data.init(),
