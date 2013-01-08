@@ -76,6 +76,7 @@ def create_rabbitmq(env, instance_type='m1.small'):
                   security_groups=['solitude-base-%s' % env,
                                    'solitude-rabbitmq-%s' % env])
 
+
 @task
 def create_graphite(env, instance_type='m1.small'):
     """
@@ -86,6 +87,7 @@ def create_graphite(env, instance_type='m1.small'):
     create_server('graphite', server_type='graphite', env=env, ami=AMAZON_AMI,
                   security_groups=['solitude-base-%s' % env,
                                    'solitude-graphite-%s' % env])
+
 
 @task
 def create_database(env, password, instance_type='db.m1.small'):
@@ -111,7 +113,7 @@ def create_database_replica(env, instance_type='db.m1.small'):
     rds_id = "solitude-replica-%s" % env
     master_rds_id = "solitude-master-%s" % env
     rds.create_replica(rds_id, master_rds_id, server_type=instance_type)
-    
+
 
 @task
 def create_security_groups(env):
@@ -119,7 +121,7 @@ def create_security_groups(env):
     args: env
     This function will create security groups for the specified env
     """
-    security_groups = [ 
+    security_groups = [
                         'solitude-base-%s' % env,
                         'solitude-celery-%s' % env,
                         'solitude-graphite-%s' % env,
