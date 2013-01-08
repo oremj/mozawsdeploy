@@ -35,7 +35,10 @@ def create_security_groups(security_groups):
 
     for sg in security_groups:
         desc = re.sub('-', ' ', sg)
-        c.create_security_group(sg, desc, config.vpc_id)
+        try:
+            c.create_security_group(sg, desc, config.vpc_id)
+        except:
+            print 'error'
 
 
 def get_instance(instance_ids=None, filters=None):
