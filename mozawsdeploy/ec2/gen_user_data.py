@@ -22,4 +22,4 @@ def add_host(ip, host):
 
 
 def run_puppet():
-    return 'puppet agent --test --certname $(curl -s "http://169.254.169.254/latest/meta-data/instance-id")'
+    return 'puppet agent --test --pluginsync --certname $(curl -s "http://169.254.169.254/latest/meta-data/instance-id")'

@@ -78,6 +78,18 @@ def create_rabbitmq(env, instance_type='m1.small'):
 
 
 @task
+def create_graphite(env, instance_type='m1.small'):
+    """
+    args: env, instance_type
+    This function will create the "golden master" ami for solitude web servers.
+    TODO: needs to user_data to puppetize server
+    """
+    create_server('graphite', server_type='graphite', env=env, ami=AMAZON_AMI,
+                  security_groups=['solitude-base-%s' % env,
+                                   'solitude-graphite-%s' % env])
+
+
+@task
 def create_database(env, password, instance_type='db.m1.small'):
     """
     args: env, password, instance_type
@@ -101,7 +113,7 @@ def create_database_replica(env, instance_type='db.m1.small'):
     rds_id = "solitude-replica-%s" % env
     master_rds_id = "solitude-master-%s" % env
     rds.create_replica(rds_id, master_rds_id, server_type=instance_type)
-    
+
 
 @task
 def create_security_groups(env):
@@ -109,13 +121,18 @@ def create_security_groups(env):
     args: env
     This function will create security groups for the specified env
     """
-    security_groups = [ 
+    security_groups = [
                         'solitude-base-%s' % env,
-                        'solitude-rabbitmq-%s' % env,
-                        'solitude-syslog-%s' % env,
                         'solitude-celery-%s' % env,
+                        'solitude-graphite-%s' % env,
+                        'solitude-graphite-elb-%s' % env,
+                        'solitude-rabbitmq-%s' % env,
+                        'solitude-rabbitmq-elb-%s' % env,
                         'solitude-sentry-%s' % env,
+                        'solitude-sentry-elb-%s' % env,
+                        'solitude-syslog-%s' % env,
                         'solitude-web-%s' % env,
+                        'solitude-web-elb-%s' % env,
                       ]
 
     ec2.create_security_groups(security_groups)
