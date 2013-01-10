@@ -138,7 +138,6 @@ def create_security_groups(env):
     ec2.create_security_groups(security_groups)
 
 
-@task
 def build_release(project_dir, ref):
     """Build release. This assumes puppet has placed settings in /settings"""
     release_time = time.time()
@@ -167,4 +166,5 @@ def build_release(project_dir, ref):
           (project_dir, release_dir))
 
     with lcd(project_dir):
-        local('ln -snf %s latest' % release_dir)
+        local('ln -snf %s/solitude solitude' % release_dir)
+        local('ln -snf %s/venv venv' % release_dir)
