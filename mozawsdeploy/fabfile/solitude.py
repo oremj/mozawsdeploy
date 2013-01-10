@@ -142,11 +142,11 @@ def create_security_groups(env):
 def build_release(project_dir, ref):
     """Build release. This assumes puppet has placed settings in /settings"""
     release_time = time.time()
-    release_dir = os.path.join(project_dir, 'solitude-%d-%s' %
+    release_dir = os.path.join(project_dir, 'builds', 'solitude-%d-%s' %
                                (release_time,
                                 re.sub('[^A-z0-9]', '.', ref)))
 
-    local('mkdir %s' % release_dir)
+    local('mkdir -p %s' % release_dir)
     local('git clone git://github.com/mozilla/solitude.git %s/solitude'
           % release_dir)
     with lcd('%s/solitude' % release_dir):
@@ -167,5 +167,4 @@ def build_release(project_dir, ref):
           (project_dir, release_dir))
 
     with lcd(project_dir):
-        local('ln -snf %s/solitude solitude' % release_dir)
-        local('ln -snf %s/venv venv' % release_dir)
+        local('ln -snf %s latest' % release_dir)
