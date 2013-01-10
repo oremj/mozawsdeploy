@@ -146,7 +146,7 @@ def build_release(project_dir, ref):
     local('%s/venv/bin/python /usr/bin/virtualenv --relocatable %s/venv' %
           (release_dir, release_dir))
 
-    local('cp %s/settings/local.py %s/solitude/solitude/settings/local.py' %
+    local('rsync -av %s/settings/ %s/solitude/solitude/settings/' %
           (project_dir, release_dir))
 
     with lcd(project_dir):
