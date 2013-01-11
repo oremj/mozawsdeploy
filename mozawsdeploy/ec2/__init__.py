@@ -33,12 +33,16 @@ def get_security_group_ids(security_groups):
 def create_security_groups(security_groups):
     c = get_connection()
 
+    created_groups = {}
     for sg in security_groups:
         desc = re.sub('-', ' ', sg)
         try:
-            c.create_security_group(sg, desc, config.vpc_id)
+            sec_group = c.create_security_group(sg, desc, config.vpc_id)
+            created_groups[sg] = sec_group
         except:
             print 'error'
+
+    return created_groups
 
 
 def get_instance(instance_ids=None, filters=None):
