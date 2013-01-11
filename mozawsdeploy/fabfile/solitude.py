@@ -5,9 +5,8 @@ from functools import partial
 
 from fabric.api import lcd, local, task
 
-from mozawsdeploy import ec2
+from mozawsdeploy import config, ec2
 from mozawsdeploy.fabfile import aws
-from mozawsdepoloy import config
 
 
 AMAZON_AMI = 'ami-2a31bf1a'
