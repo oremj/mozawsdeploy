@@ -1,4 +1,3 @@
-import os
 import time
 import re
 
@@ -30,17 +29,45 @@ def get_security_group_ids(security_groups):
     return [i.id for i in sg if i.vpc_id == config.vpc_id]
 
 
-def create_security_groups(security_groups):
+class SecurityGroupInbound:
+    def __init__(self, protocol, from_port, to_port, groups):
+        self.protocol = protocol
+        self.from_port = from_port
+        self.to_port = to_port
+        self.groups = groups
+
+
+class SecurityGroup:
+    def __init__(self, name, inbounds):
+        self.name = name
+        self.inbounds = inbounds
+
+
+def create_security_groups(security_groups, app, env):
     c = get_connection()
 
     created_groups = {}
     for sg in security_groups:
-        desc = re.sub('-', ' ', sg)
+        full_sg = '%s-%s-%s' % (app, sg.name, env)
+        desc = re.sub('-', ' ', full_sg)
         try:
-            sec_group = c.create_security_group(sg, desc, config.vpc_id)
-            created_groups[sg] = sec_group
+            sec_group = c.create_security_group(full_sg, desc, config.vpc_id)
+            created_groups[sg.name] = sec_group
+            print 'Created: %s' % full_sg
         except:
             print 'error'
+
+    for sg in security_groups:
+        real_sg = created_groups[sg.name]
+        for policy in sg.inbounds:
+            for group in policy.groups:
+                real_sg.authorize(ip_protocol=policy.protocol,
+                                  from_port=policy.from_port,
+                                  to_port=policy.to_port,
+                                  src_group=group)
+                print 'Authorized: %s -> %s:%d/%s' % (group, sg.name,
+                                                      policy.from_port,
+                                                      policy.ip_protocol)
 
     return created_groups
 
