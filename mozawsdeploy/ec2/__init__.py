@@ -54,7 +54,7 @@ def get_instance(instance_ids=None, filters=None):
 
 def create_server(name, app, server_type, env, ami,
                   security_groups=None, userdata=None,
-                  count=1, key_name=None):
+                  count=1, key_name=None, subnet_id=None):
 
     if security_groups:
         security_group_ids = get_security_group_ids(security_groups)
@@ -74,7 +74,7 @@ def create_server(name, app, server_type, env, ami,
     res = c.run_instances(ami, key_name=key_name, min_count=count,
                           max_count=count,
                           security_group_ids=security_group_ids,
-                          user_data=userdata, subnet_id=config.subnet_id)
+                          user_data=userdata, subnet_id=subnet_id)
 
     time.sleep(1)  # sleep to decrease chances of instance ID does not exist
     for i in res.instances:
