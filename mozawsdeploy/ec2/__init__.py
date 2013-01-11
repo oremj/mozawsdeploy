@@ -38,9 +38,12 @@ class SecurityGroupInbound:
 
 
 class SecurityGroup:
-    def __init__(self, name, inbounds):
+    def __init__(self, name, inbounds=None):
         self.name = name
-        self.inbounds = inbounds
+        if inbounds:
+            self.inbounds = inbounds
+        else:
+            self.inbounds = []
 
 
 def create_security_groups(security_groups, app, env):
@@ -54,8 +57,8 @@ def create_security_groups(security_groups, app, env):
             sec_group = c.create_security_group(full_sg, desc, config.vpc_id)
             created_groups[sg.name] = sec_group
             print 'Created: %s' % full_sg
-        except:
-            print 'error'
+        except Exception, e:
+            print e
 
     for sg in security_groups:
         real_sg = created_groups[sg.name]
@@ -64,10 +67,10 @@ def create_security_groups(security_groups, app, env):
                 real_sg.authorize(ip_protocol=policy.protocol,
                                   from_port=policy.from_port,
                                   to_port=policy.to_port,
-                                  src_group=group)
+                                  src_group=created_groups[group])
                 print 'Authorized: %s -> %s:%d/%s' % (group, sg.name,
                                                       policy.from_port,
-                                                      policy.ip_protocol)
+                                                      policy.protocol)
 
     return created_groups
 

@@ -1,4 +1,4 @@
 from mozawsdeploy import configure
-from . import solitude
+from . import aws, web
 
 configure()
