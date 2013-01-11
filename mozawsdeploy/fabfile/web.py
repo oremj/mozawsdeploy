@@ -30,7 +30,7 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
           '--no-index --download-cache=/tmp/pip-cache '
           '-f https://pyrepo.addons.mozilla.org '
           '-r %s' %
-          (release_dir, release_dir, app, requirements))
+          (release_dir, requirements))
     local('rm -f %s/venv/lib/python2.6/no-global-site-packages.txt' %
           release_dir)
     local('%s/venv/bin/python /usr/bin/virtualenv --relocatable %s/venv' %
