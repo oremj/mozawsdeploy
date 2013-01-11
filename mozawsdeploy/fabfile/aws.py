@@ -1,10 +1,3 @@
-import os
-import re
-import time
-from functools import partial
-
-from fabric.api import lcd, local, task
-
 from mozawsdeploy import ec2
 
 

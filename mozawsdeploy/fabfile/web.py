@@ -1,6 +1,8 @@
 import os
 import re
+import shutil
 import time
+from datetime import datetime
 
 from fabric.api import local, lcd
 
@@ -44,3 +46,27 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
     with lcd(project_dir):
         local('ln -snf %s/%s %s' % (release_dir, app, app))
         local('ln -snf %s/venv venv' % release_dir)
+
+
+def remove_old_releases(project_dir, keep=4):
+    """args: keep (default 4) must be at least 2"""
+
+    assert keep >= 2
+
+    build_dir = os.path.join(project_dir, 'builds')
+
+    builds = []
+    for d in os.listdir(build_dir):
+        app, timestamp, ref = d.split('-')
+        dt = datetime.fromtimestamp(int(timestamp))
+        builds.append((dt, os.path.join(build_dir, d)))
+
+    removed = 0
+    builds.sort()
+    for b, d in builds[:-keep]:
+        shutil.rmtree(d)
+        removed += 1
+
+    print "Removed %d old releases." % removed
+
+
