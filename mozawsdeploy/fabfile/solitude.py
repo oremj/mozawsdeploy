@@ -121,19 +121,17 @@ def create_security_groups(env):
     args: env
     This function will create security groups for the specified env
     """
-    security_groups = [
-                        'solitude-base-%s' % env,
-                        'solitude-celery-%s' % env,
-                        'solitude-graphite-%s' % env,
-                        'solitude-graphite-elb-%s' % env,
-                        'solitude-rabbitmq-%s' % env,
-                        'solitude-rabbitmq-elb-%s' % env,
-                        'solitude-sentry-%s' % env,
-                        'solitude-sentry-elb-%s' % env,
-                        'solitude-syslog-%s' % env,
-                        'solitude-web-%s' % env,
-                        'solitude-web-elb-%s' % env,
-                      ]
+    security_groups = ['solitude-base-%s' % env,
+                       'solitude-celery-%s' % env,
+                       'solitude-graphite-%s' % env,
+                       'solitude-graphite-elb-%s' % env,
+                       'solitude-rabbitmq-%s' % env,
+                       'solitude-rabbitmq-elb-%s' % env,
+                       'solitude-sentry-%s' % env,
+                       'solitude-sentry-elb-%s' % env,
+                       'solitude-syslog-%s' % env,
+                       'solitude-web-%s' % env,
+                       'solitude-web-elb-%s' % env]
 
     ec2.create_security_groups(security_groups)
 
@@ -141,9 +139,10 @@ def create_security_groups(env):
 def build_release(project_dir, ref):
     """Build release. This assumes puppet has placed settings in /settings"""
     release_time = time.time()
-    release_dir = os.path.join(project_dir, 'builds', 'solitude-%d-%s' %
-                               (release_time,
-                                re.sub('[^A-z0-9]', '.', ref)))
+    release_id = 'solitude-%d-%s' % (release_time, re.sub('[^A-z0-9]',
+                                                          '.', ref))
+    release_dir = os.path.join(project_dir, 'builds', release_id)
+    tarball = os.path.join(project_dir, 'releases', '%s.tar.gz' % release_id)
 
     local('mkdir -p %s' % release_dir)
     local('git clone git://github.com/mozilla/solitude.git %s/solitude'
@@ -165,6 +164,12 @@ def build_release(project_dir, ref):
     local('rsync -av %s/settings/ %s/solitude/solitude/settings/' %
           (project_dir, release_dir))
 
+    local('rsync -av %s/aeskeys/ %s/aeskeys/' % (project_dir, release_dir))
+
+    local('tar czf %s -C %s solitude aeskeys venv' %
+          (tarball, release_dir))
+
     with lcd(project_dir):
         local('ln -snf %s/solitude solitude' % release_dir)
         local('ln -snf %s/venv venv' % release_dir)
+        local('ln -snf %s latest.tar.gz' % tarball)
