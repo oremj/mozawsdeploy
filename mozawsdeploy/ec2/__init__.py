@@ -50,27 +50,40 @@ def create_security_groups(security_groups, app, env):
     c = get_connection()
 
     created_groups = {}
+    cur_groups = [sg for sg in c.get_all_security_groups()
+                  if sg.vpc_id == config.vpc_id]
+
     for sg in security_groups:
         full_sg = '%s-%s-%s' % (app, sg.name, env)
         desc = re.sub('-', ' ', full_sg)
-        try:
+
+        sec_group = None
+        for i in cur_groups: # Try to find the group
+            if i.name == full_sg:
+                sec_group = i
+                break
+
+        if sec_group is None: # Create if it didn't exist
             sec_group = c.create_security_group(full_sg, desc, config.vpc_id)
-            created_groups[sg.name] = sec_group
             print 'Created: %s' % full_sg
-        except Exception, e:
-            print e
+
+        created_groups[sg.name] = sec_group
 
     for sg in security_groups:
         real_sg = created_groups[sg.name]
         for policy in sg.inbounds:
             for group in policy.groups:
-                real_sg.authorize(ip_protocol=policy.protocol,
-                                  from_port=policy.from_port,
-                                  to_port=policy.to_port,
-                                  src_group=created_groups[group])
-                print 'Authorized: %s -> %s:%d/%s' % (group, sg.name,
-                                                      policy.from_port,
-                                                      policy.protocol)
+                try:
+                    real_sg.authorize(ip_protocol=policy.protocol,
+                                      from_port=policy.from_port,
+                                      to_port=policy.to_port,
+                                      src_group=created_groups[group])
+                    print 'Authorized: %s -> %s:%d/%s' % (group, sg.name,
+                                                          policy.from_port,
+                                                          policy.protocol)
+                except Exception, e:
+                    print e
+
 
     return created_groups
 
