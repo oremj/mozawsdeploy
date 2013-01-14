@@ -13,6 +13,8 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
        requirements and settings_dir are relative to release_dir
        If extra is defined, it will be a function that takes "release_dir"
        as an arg. it is executed right before symlinking the release.
+
+       Returns: release_id
     """
     release_time = time.time()
     release_id = '%s-%d-%s' % (app, release_time, re.sub('[^A-z0-9]',
@@ -46,6 +48,8 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
     with lcd(project_dir):
         local('ln -snf %s/%s %s' % (release_dir, app, app))
         local('ln -snf %s/venv venv' % release_dir)
+
+    return release_id
 
 
 def remove_old_releases(project_dir, keep=4):
