@@ -17,8 +17,8 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
        Returns: release_id
     """
     release_time = time.time()
-    release_id = '%s-%d-%s' % (app, release_time, re.sub('[^A-z0-9]',
-                                                         '.', ref))[:31]
+    release_id = ('%s-%d-%s' % (app, release_time, re.sub('[^A-z0-9]',
+                                                          '.', ref)))[:31]
     release_dir = os.path.join(project_dir, 'builds', release_id)
 
     requirements = os.path.join(release_dir, app, requirements)
