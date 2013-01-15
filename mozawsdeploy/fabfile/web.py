@@ -18,7 +18,7 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
     """
     release_time = time.time()
     release_id = '%s-%d-%s' % (app, release_time, re.sub('[^A-z0-9]',
-                                                         '.', ref))
+                                                         '.', ref))[:31]
     release_dir = os.path.join(project_dir, 'builds', release_id)
 
     requirements = os.path.join(release_dir, app, requirements)
@@ -72,5 +72,3 @@ def remove_old_releases(project_dir, keep=4):
         removed += 1
 
     print "Removed %d old releases." % removed
-
-
