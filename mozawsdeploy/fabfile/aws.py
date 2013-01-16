@@ -1,10 +1,31 @@
 import time
 
-from mozawsdeploy import ec2
+from fabric.api import task
+from mozawsdeploy import config, ec2
 
 
 AMAZON_AMI = 'ami-2a31bf1a'
 
+@task
+def print_instances():
+    instances = ec2.get_vpc_instances()
+    instances.sort(key=lambda x: x.tags.get('Type', ''))
+
+
+    cur_type = None
+    for instance in instances:
+        inst_type = instance.tags.get('Type', 'No Type')
+        if cur_type != inst_type:
+            print inst_type
+            cur_type = inst_type
+
+        print "\t%s" % instance.private_ip_address
+
+
+@task
+def print_security_groups():
+    ec2.display_security_group_flows(config.vpc_id)
+    
 
 def create_server(app, server_type, env, ami=AMAZON_AMI, instance_type='m1.small',
                   subnet_id=None, count=1):
