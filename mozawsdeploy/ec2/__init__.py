@@ -29,6 +29,40 @@ def get_security_group_ids(security_groups):
     return [i.id for i in sg if i.vpc_id == config.vpc_id]
 
 
+def display_security_group_flows(vpc_id):
+    c = get_connection()
+    sgs = c.get_all_security_groups()
+    sgs = [i for i in sgs if i.vpc_id == vpc_id]
+    sgs.sort(key=lambda x: x.name)
+    for sg in sgs:
+        print "%s:" % sg.name
+        for rule in sg.rules:
+            if rule.to_port == rule.from_port:
+                port = rule.from_port
+            else:
+                port = "%s-%s" % (rule.from_port,
+                                  rule.to_port)
+            
+            if port is None:
+                port = 'ALL'
+
+            protocol = rule.ip_protocol
+            if protocol == '-1':
+                protocol = 'ALL'
+
+            for grant in rule.grants:
+                if grant.cidr_ip:
+                    grant = grant.cidr_ip
+                else:
+                    grant = next(i for i in sgs
+                                 if i.id == grant.group_id).name
+
+                print "\t:%s/%s <- %s" % (port,
+                                          protocol,
+                                          grant)
+        print
+
+
 class SecurityGroupInbound:
     def __init__(self, protocol, from_port, to_port, groups):
         self.protocol = protocol
