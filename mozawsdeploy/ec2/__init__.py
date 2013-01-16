@@ -22,6 +22,11 @@ def get_elb_connection():
 
     return c
 
+def get_vpc_instances():
+    c = get_connection()
+    filters = {'vpc-id': config.vpc_id}
+    return c.get_all_instances(filters=filters)
+
 
 def get_security_group_ids(security_groups):
     c = get_connection()
