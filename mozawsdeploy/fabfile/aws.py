@@ -1,16 +1,24 @@
 import time
 
-from fabric.api import task
+from fabric.api import output, task
 from mozawsdeploy import config, ec2
 
 
 AMAZON_AMI = 'ami-2a31bf1a'
 
+
+@task
+def print_type(instance_type):
+    output.status = False  # easier to use in bash scripts with this.
+    instances = ec2.get_instances_by_tags({'Type': instance_type})
+    for i in instances:
+        print i.private_ip_address
+
+
 @task
 def print_instances():
     instances = ec2.get_vpc_instances()
     instances.sort(key=lambda x: x.tags.get('Type', ''))
-
 
     cur_type = None
     for instance in instances:
@@ -24,17 +32,48 @@ def print_instances():
 
 @task
 def print_security_groups():
-    ec2.display_security_group_flows(config.vpc_id)
-    
+    c = ec2.get_connection()
+    sgs = c.get_all_security_groups()
+    sgs = [i for i in sgs if i.vpc_id == config.vpc_id]
+    sgs.sort(key=lambda x: x.name)
+    for sg in sgs:
+        print "%s:" % sg.name
+        for rule in sg.rules:
+            if rule.to_port == rule.from_port:
+                port = rule.from_port
+            else:
+                port = "%s-%s" % (rule.from_port,
+                                  rule.to_port)
 
-def create_server(app, server_type, env, ami=AMAZON_AMI, instance_type='m1.small',
-                  subnet_id=None, count=1):
+            if port is None:
+                port = 'ALL'
+
+            protocol = rule.ip_protocol
+            if protocol == '-1':
+                protocol = 'ALL'
+
+            for grant in rule.grants:
+                if grant.cidr_ip:
+                    grant = grant.cidr_ip
+                else:
+                    grant = next(i for i in sgs
+                                 if i.id == grant.group_id).name
+
+                print "\t:%s/%s <- %s" % (port,
+                                          protocol,
+                                          grant)
+        print
+
+
+def create_server(app, server_type, env, ami=AMAZON_AMI,
+                  instance_type='m1.small', subnet_id=None, count=1):
     count = int(count)
-    instances = ec2.create_server(server_type, server_type=server_type, env=env,
-                                  app=app, ami=ami,
+    instances = ec2.create_server(server_type, server_type=server_type,
+                                  env=env, app=app, ami=ami,
                                   count=count, subnet_id=subnet_id,
                                   security_groups=['%s-base-%s' % (app, env),
-                                                   '%s-%s-%s' % (app, server_type,
+                                                   '%s-%s-%s' % (app,
+                                                                 server_type,
                                                                  env)])
 
     return instances

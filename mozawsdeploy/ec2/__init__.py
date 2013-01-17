@@ -22,10 +22,11 @@ def get_elb_connection():
 
     return c
 
-def get_vpc_instances():
+
+def get_instances(filters):
     c = get_connection()
-    filters = {'vpc-id': config.vpc_id}
     res = c.get_all_instances(filters=filters)
+
     instances = []
     for r in res:
         instances += r.instances
@@ -33,44 +34,24 @@ def get_vpc_instances():
     return instances
 
 
+def get_vpc_instances():
+    filters = {'vpc-id': config.vpc_id}
+    return get_instances(filters)
+
+
+def get_instances_by_tags(tags):
+    """tags should be a dict in the format {'tag': 'value'}"""
+    filters = {'vpc-id': config.vpc_id}
+    for tag, val in tags.iteritems():
+        filters['tag:%s' % tag] = val
+
+    return get_instances(filters)
+
+
 def get_security_group_ids(security_groups):
     c = get_connection()
     sg = c.get_all_security_groups(filters={'group-name': security_groups})
     return [i.id for i in sg if i.vpc_id == config.vpc_id]
-
-
-def display_security_group_flows(vpc_id):
-    c = get_connection()
-    sgs = c.get_all_security_groups()
-    sgs = [i for i in sgs if i.vpc_id == vpc_id]
-    sgs.sort(key=lambda x: x.name)
-    for sg in sgs:
-        print "%s:" % sg.name
-        for rule in sg.rules:
-            if rule.to_port == rule.from_port:
-                port = rule.from_port
-            else:
-                port = "%s-%s" % (rule.from_port,
-                                  rule.to_port)
-            
-            if port is None:
-                port = 'ALL'
-
-            protocol = rule.ip_protocol
-            if protocol == '-1':
-                protocol = 'ALL'
-
-            for grant in rule.grants:
-                if grant.cidr_ip:
-                    grant = grant.cidr_ip
-                else:
-                    grant = next(i for i in sgs
-                                 if i.id == grant.group_id).name
-
-                print "\t:%s/%s <- %s" % (port,
-                                          protocol,
-                                          grant)
-        print
 
 
 class SecurityGroupInbound:
@@ -102,12 +83,12 @@ def create_security_groups(security_groups, app, env):
         desc = re.sub('-', ' ', full_sg)
 
         sec_group = None
-        for i in cur_groups: # Try to find the group
+        for i in cur_groups:  # Try to find the group
             if i.name == full_sg:
                 sec_group = i
                 break
 
-        if sec_group is None: # Create if it didn't exist
+        if sec_group is None:  # Create if it didn't exist
             sec_group = c.create_security_group(full_sg, desc, config.vpc_id)
             print 'Created: %s' % full_sg
 
@@ -127,7 +108,6 @@ def create_security_groups(security_groups, app, env):
                                                           policy.protocol)
                 except Exception, e:
                     print e
-
 
     return created_groups
 
