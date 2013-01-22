@@ -8,7 +8,7 @@ from fabric.api import local, lcd
 
 
 def build_release(app, project_dir, repo, ref, requirements, settings_dir,
-                  extra=None):
+                  release_id=None, build_dir=None, extra=None):
     """Build release. This assumes puppet has placed settings in /settings
        requirements and settings_dir are relative to release_dir
        If extra is defined, it will be a function that takes "release_dir"
@@ -16,10 +16,15 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
 
        Returns: release_id
     """
-    release_time = time.time()
-    release_id = ('%s-%d-%s' % (app, release_time, re.sub('[^A-z0-9]',
-                                                          '.', ref)))[:31]
-    release_dir = os.path.join(project_dir, 'builds', release_id)
+    if not release_id:
+        release_time = time.time()
+        release_id = ('%d-%s' % (release_time, re.sub('[^A-z0-9]',
+                                                      '.', ref)))[:21]
+
+    if build_dir:
+        release_dir = os.path.join(build_dir, release_id)
+    else:
+        release_dir = os.path.join(project_dir, 'builds', release_id)
 
     requirements = os.path.join(release_dir, app, requirements)
     settings_dir = os.path.join(release_dir, app, settings_dir)
@@ -44,10 +49,6 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
 
     if extra:
         extra(release_dir)
-
-    with lcd(project_dir):
-        local('ln -snf %s/%s %s' % (release_dir, app, app))
-        local('ln -snf %s/venv venv' % release_dir)
 
     return release_id
 
