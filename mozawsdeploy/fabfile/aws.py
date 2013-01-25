@@ -114,6 +114,6 @@ def deploy_instances_and_wait(create_instance, lb_name, ref,
     print 'Sleeping for 5 min while instances build.'
     time.sleep(300)
     print 'Waiting for instances (timeout: %ds)' % wait_timeout
-    aws.wait_for_healthy_instances(lb_name, new_inst_ids, wait_timeout)
+    wait_for_healthy_instances(lb_name, new_inst_ids, wait_timeout)
     print 'All instances healthy'
     print '%s is now running' % ref

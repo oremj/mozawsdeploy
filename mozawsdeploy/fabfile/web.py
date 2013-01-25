@@ -2,7 +2,7 @@ import os
 import re
 import time
 
-from fabric.api import local, lcd
+from fabric.api import local, lcd, sudo, task
 
 
 def create_virtualenv(release_dir):
