@@ -66,3 +66,18 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
         extra(release_dir)
 
     return release_id
+
+
+@task
+def build_app(cluster, site_name, ref):
+    local('%s/build/%s "%s"' % (cluster, site_name, ref))
+
+
+@task
+def install_app(cluster, site_name, build_id='LATEST'):
+    local('%s/bin/install-app %s %s' % (cluster, site_name, build_id))
+
+
+@task
+def remote_install_app(cluster, site_name, build_id='LATEST'):
+    sudo('%s/bin/install-app %s %s' % (cluster, site_name, build_id))
