@@ -23,9 +23,9 @@ def get_elb_connection():
     return c
 
 
-def get_instances(filters):
+def get_instances(instance_ids=None, filters=None):
     c = get_connection()
-    res = c.get_all_instances(filters=filters)
+    res = c.get_all_instances(instance_ids=instance_ids, filters=filters)
 
     instances = []
     for r in res:
@@ -36,7 +36,7 @@ def get_instances(filters):
 
 def get_vpc_instances():
     filters = {'vpc-id': config.vpc_id}
-    return get_instances(filters)
+    return get_instances(filters=filters)
 
 
 def get_instances_by_tags(tags):
@@ -45,7 +45,17 @@ def get_instances_by_tags(tags):
     for tag, val in tags.iteritems():
         filters['tag:%s' % tag] = val
 
-    return get_instances(filters)
+    return get_instances(filters=filters)
+
+
+def get_instances_by_lb(lb_name):
+    c = get_connection()
+    elb_conn = get_elb_connection()
+
+    instance_states = elb_conn.describe_instance_health(lb_name)
+
+    return get_instances(instance_ids=[i.instance_id 
+                                       for i in instance_states])
 
 
 def get_security_group_ids(security_groups):
