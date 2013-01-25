@@ -108,7 +108,7 @@ def deploy_instances_and_wait(create_instance, lb_name, ref,
                               count, wait_timeout):
     """create_instance must return a list of instances
        and take a ref and count"""
-    instances = create_instance(ref=ref, count=count)
+    instances = create_instance(release_id=ref, count=count)
     new_inst_ids = [i.id for i in instances]
 
     print 'Sleeping for 2 min while instances build.'
