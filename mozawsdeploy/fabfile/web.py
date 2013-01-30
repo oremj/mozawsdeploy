@@ -69,8 +69,9 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
 
 
 @task
-def build_app(cluster, site_name, ref):
-    local('%s/build/%s "%s"' % (cluster, site_name, ref))
+def build_app(project_dir, ref):
+    with lcd(project_dir):
+        local('/usr/bin/mozdeploy-build-app -v "%s"' % ref)
 
 
 @task
