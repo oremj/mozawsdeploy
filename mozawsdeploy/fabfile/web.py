@@ -45,7 +45,7 @@ def build_release(app, project_dir, repo, ref, requirements, settings_dir,
                                                       '.', ref)))[:21]
 
     if build_dir:
-        release_dir = os.path.join(build_dir, release_id)
+        release_dir = build_dir
     else:
         release_dir = os.path.join(project_dir, 'builds', release_id)
 
