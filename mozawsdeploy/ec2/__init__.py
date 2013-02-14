@@ -148,7 +148,7 @@ def create_server(name, app, server_type, env, ami,
                     gen_user_data.easy_install('pip'),
                     gen_user_data.pyrepo_install(['supervisor', 'virtualenv']),
                     gen_user_data.pyrepo_install(['supervisor', 'requests',
-                                                  'mozdeploy', 'argparse',
+                                                  'app-packr', 'argparse',
                                                   'virtualenv']),
                     gen_user_data.add_host(config.puppet_ip, 'puppet'),
                     gen_user_data.run_puppet()]
