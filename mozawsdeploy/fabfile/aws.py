@@ -68,7 +68,8 @@ def print_security_groups():
 def create_server(app, server_type, env, ami=AMAZON_AMI,
                   instance_type='m1.small', subnet_id=None, count=1):
     count = int(count)
-    instances = ec2.create_server(server_type, server_type=server_type,
+    instances = ec2.create_server(name='%s.%s' % (server_type, env),
+                                  server_type=server_type,
                                   env=env, app=app, ami=ami,
                                   count=count, subnet_id=subnet_id,
                                   security_groups=['%s-base-%s' % (app, env),
