@@ -1,6 +1,6 @@
 import time
 
-from fabric.api import output, task
+from fabric.api import execute, output, settings, sudo, task
 from mozawsdeploy import config, ec2
 
 
@@ -63,6 +63,20 @@ def print_security_groups():
                                           protocol,
                                           grant)
         print
+
+
+@task
+def _run_puppet():
+    sudo('puppetd -t')
+
+
+@task
+def run_puppet(instance_type='*'):
+    """Runs puppetd -t all hosts specified by type"""
+    instances = ec2.get_instances_by_tags({'Type': instance_type})
+    with settings(hosts=[i.private_ip_address
+                         for i in instances if i.private_ip_address]):
+        execute(_run_puppet)
 
 
 def create_server(app, server_type, env, ami=AMAZON_AMI,
