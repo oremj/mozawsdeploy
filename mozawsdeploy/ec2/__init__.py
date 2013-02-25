@@ -34,6 +34,15 @@ def get_instances(instance_ids=None, filters=None):
     return instances
 
 
+def prefix_instance_names(instance_ids, prefix):
+    """Use this to add a tag to the beginning of the name
+       for example prefix="FAILED." or prefix="OLD."
+    """
+    instances = get_instances(instance_ids)
+    for i in instances:
+        i.add_tag('Name', '%s%s' % (prefix, i.tags.get('Name', '')))
+
+
 def get_vpc_instances():
     filters = {'vpc-id': config.vpc_id}
     return get_instances(filters=filters)

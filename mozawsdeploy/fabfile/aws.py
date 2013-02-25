@@ -103,6 +103,7 @@ def wait_for_healthy_instances(lb_name, new_instance_ids, timeout):
     while True:
         if timeout < (time.time() - start_time):
             elb_conn.deregister_instances(lb_name, new_instance_ids)
+            ec2.prefix_instance_names(new_instance_ids, 'FAILED.')
             raise Exception('Timeout exceeded.')
 
         instance_health = elb_conn.describe_instance_health(lb_name,
@@ -114,6 +115,7 @@ def wait_for_healthy_instances(lb_name, new_instance_ids, timeout):
                             if i.instance_id not in new_instance_ids]
 
             elb_conn.deregister_instances(lb_name, old_inst_ids)
+            ec2.prefix_instance_names(old_inst_ids, 'OLD.')
             return
 
         time.sleep(10)
