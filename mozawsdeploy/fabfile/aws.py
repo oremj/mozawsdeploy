@@ -54,12 +54,7 @@ def apply_security_policy(policy_json):
 
 @task
 def print_security_groups():
-    c = ec2.get_connection()
-    sgs = c.get_all_security_groups()
-    sgs = [i for i in sgs if i.vpc_id == config.vpc_id]
-    sgs.sort(key=lambda x: x.name)
-    for sg in sgs:
-        print "%s:" % sg.name
+    def print_rules(sgs, rules, direction):
         for rule in sg.rules:
             if rule.to_port == rule.from_port:
                 port = rule.from_port
@@ -81,9 +76,19 @@ def print_security_groups():
                     grant = next(i for i in sgs
                                  if i.id == grant.group_id).name
 
-                print "\t:%s/%s <- %s" % (port,
+                print "\t:%s/%s %s %s" % (port,
                                           protocol,
+                                          direction,
                                           grant)
+
+    c = ec2.get_connection()
+    sgs = c.get_all_security_groups()
+    sgs = [i for i in sgs if i.vpc_id == config.vpc_id]
+    sgs.sort(key=lambda x: x.name)
+    for sg in sgs:
+        print "%s:" % sg.name
+        print_rules(sgs, sg.rules, '<-')
+        print_rules(sgs, sg.rules_egress, '->')
         print
 
 
