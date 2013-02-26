@@ -80,6 +80,14 @@ def run_puppet(instance_type='*'):
         execute(_run_puppet)
 
 
+@task
+def create_vpc_instance(server_type, subnet_id,
+                        instance_type='m1.small', count=1):
+    """Args: server_type, subnet_id, [instance_type, count]"""
+    return create_server(server_type=server_type, subnet_id=subnet_id,
+                         instance_type=instance_type, count=count)
+
+
 def create_server(server_type, ami=AMAZON_AMI,
                   instance_type='m1.small', subnet_id=None, count=1):
     count = int(count)
