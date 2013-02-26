@@ -1,3 +1,4 @@
+import json
 import time
 
 from fabric.api import execute, output, settings, sudo, task
@@ -29,6 +30,26 @@ def print_instances():
             cur_type = inst_type
 
         print "\t%s" % instance.private_ip_address
+
+
+@task
+def apply_security_policy(policy_json):
+    """Takes json file containing security policy as argument
+
+       Example json:
+    {
+        "admin": {"in": ["celery,web,web-proxy:873/tcp",
+                         "celery,web:8080/tcp",
+                         "web-proxy:8081/tcp",
+                         "base:8140/tcp"]},
+        "celery": {},
+        "base": {"in": ["admin:22/tcp"]}
+    }
+    """
+
+    with open(policy_json) as f:
+        policy = json.load(f)
+        ec2.create_security_policy(policy, config.app, config.env)
 
 
 @task
