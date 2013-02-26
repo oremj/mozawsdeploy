@@ -151,7 +151,10 @@ def create_security_groups(security_groups, app, env):
                                                           policy.from_port,
                                                           policy.protocol)
                 except Exception, e:
-                    print e
+                    if e.error_code == 'InvalidPermission.Duplicate':
+                        pass
+                    else:
+                        print e
 
     return created_groups
 
