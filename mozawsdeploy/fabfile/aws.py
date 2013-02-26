@@ -55,7 +55,7 @@ def apply_security_policy(policy_json):
 @task
 def print_security_groups():
     def print_rules(sgs, rules, direction):
-        for rule in sg.rules:
+        for rule in rules:
             if rule.to_port == rule.from_port:
                 port = rule.from_port
             else:
