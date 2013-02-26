@@ -20,5 +20,4 @@ def configure(config_file=None):
         config.env = conf.get('awsdeploy', 'env')
         config.region = conf.get('awsdeploy', 'region')
         config.puppet_ip = conf.get('awsdeploy', 'puppet_ip')
-        config.subnet_id = conf.get('awsdeploy', 'subnet_id')
         config.vpc_id = conf.get('awsdeploy', 'vpc_id')
