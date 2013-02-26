@@ -76,8 +76,8 @@ def get_security_group_ids(security_groups):
 class SecurityGroupInbound:
     def __init__(self, protocol, from_port, to_port, groups):
         self.protocol = protocol
-        self.from_port = from_port
-        self.to_port = to_port
+        self.from_port = int(from_port)
+        self.to_port = int(to_port)
         self.groups = groups
 
 
