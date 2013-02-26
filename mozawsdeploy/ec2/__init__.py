@@ -95,7 +95,7 @@ def create_security_policy(sec_policy, app, env):
            {'name': 'in': ['group1,group2:80/tcp']}"""
 
     security_groups = []
-    for group, rules in sec_policy:
+    for group, rules in sec_policy.iteritems():
         all_ingress = []
         for ingress in rules.get('in', []):
             groups, port = ingress.split(':')
