@@ -1,6 +1,7 @@
 """This is just a placeholder for now."""
 
 app = None
+amazon_ami = 'ami-2a31bf1a'
 aws_access_key_id = None
 aws_secret_access_key = None
 env = None

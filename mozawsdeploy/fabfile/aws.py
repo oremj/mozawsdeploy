@@ -1,10 +1,11 @@
 import time
 
 from fabric.api import execute, output, settings, sudo, task
-from mozawsdeploy import config, ec2
+from mozawsdeploy import config, configure, ec2
 
 
-AMAZON_AMI = 'ami-2a31bf1a'
+configure()
+AMAZON_AMI = config.amazon_ami
 
 
 @task
@@ -79,9 +80,11 @@ def run_puppet(instance_type='*'):
         execute(_run_puppet)
 
 
-def create_server(app, server_type, env, ami=AMAZON_AMI,
+def create_server(server_type, ami=AMAZON_AMI,
                   instance_type='m1.small', subnet_id=None, count=1):
     count = int(count)
+    app = config.app
+    env = config.env
     instances = ec2.create_server(name='%s.%s.%s' % (app, env, server_type),
                                   server_type=server_type,
                                   env=env, app=app, ami=ami,
@@ -127,6 +130,10 @@ def deploy_instances_and_wait(create_instance, lb_name, ref,
     """create_instance must return a list of instances
        and take a ref and count"""
     instances = create_instance(release_id=ref, count=count)
+
+    for i in instances:
+        i.add_tag('Release', ref)
+
     new_inst_ids = [i.id for i in instances]
 
     print 'Sleeping for 2 min while instances build.'
