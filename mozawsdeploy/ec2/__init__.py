@@ -90,6 +90,25 @@ class SecurityGroup:
             self.inbounds = []
 
 
+def create_security_policy(sec_policy, app, env):
+    """sec_policy should be of the format:
+           {'name': 'in': ['group1,group2:80/tcp']}"""
+
+    security_groups = []
+    for group, rules in sec_policy:
+        all_ingress = []
+        for ingress in rules.get('in', []):
+            groups, port = ingress.split(':')
+            groups = groups.split(',')
+            port, proto = port.split('/')
+            all_ingress.append(SecurityGroupInbound(proto, port, port, groups))
+
+        security_groups.append(SecurityGroup(group, all_ingress))
+
+    create_security_groups(security_groups, app, env)
+        
+
+
 def create_security_groups(security_groups, app, env):
     c = get_connection()
 
