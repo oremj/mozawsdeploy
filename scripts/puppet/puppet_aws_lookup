@@ -9,5 +9,5 @@ from mozawsdeploy.puppet import create_node_yaml
 
 fqdn = sys.argv[1]
 
-configure()
+configure(access_only=True)
 print create_node_yaml(fqdn)
