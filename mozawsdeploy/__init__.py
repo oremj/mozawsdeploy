@@ -6,14 +6,18 @@ from . import config
 
 def configure(config_file=None):
     if not config_file:
-        config_file = ['/etc/awsdeploy', os.path.expanduser('~/.awsconfig')]
+        config_file = ['/etc/awsdeploy',
+                       '/etc/awsdeploy.puppet',
+                       os.path.expanduser('~/.awsconfig')]
 
     conf = SafeConfigParser()
     if conf.read(config_file):
+        config.app = conf.get('awsdeploy', 'app')
         config.aws_access_key_id = conf.get('awsdeploy',
                                             'aws_access_key_id')
         config.aws_secret_access_key = conf.get('awsdeploy',
                                                 'aws_secret_access_key')
+        config.env = conf.get('awsdeploy', 'env')
         config.region = conf.get('awsdeploy', 'region')
         config.puppet_ip = conf.get('awsdeploy', 'puppet_ip')
         config.subnet_id = conf.get('awsdeploy', 'subnet_id')
