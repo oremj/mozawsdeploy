@@ -137,10 +137,16 @@ def create_security_groups(security_groups, app, env):
         for policy in sg.inbounds:
             for group in policy.groups:
                 try:
+                    try:
+                        kwargs = {'src_group': created_groups[group]}
+                    except KeyError:
+                        kwargs = {'cidr_ip': group}
+
                     real_sg.authorize(ip_protocol=policy.protocol,
                                       from_port=policy.from_port,
                                       to_port=policy.to_port,
-                                      src_group=created_groups[group])
+                                      **kwargs)
+
                     print 'Authorized: %s -> %s:%d/%s' % (group, sg.name,
                                                           policy.from_port,
                                                           policy.protocol)
