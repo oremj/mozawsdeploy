@@ -1,3 +1,7 @@
+def get_instance_id():
+    return "$(curl -s 'http://169.254.169.254/latest/meta-data/instance-id')"
+
+
 def init():
     return "\n".join(['#!/bin/bash',
                       'set -x',
@@ -21,9 +25,9 @@ def add_host(ip, host):
     return 'echo "%s %s" >> /etc/hosts' % (ip, host)
 
 
-def set_hostname(hostname):
-    return 'hostname %s' % hostname
+def set_hostname(type_, env, app):
+    return 'hostname "%s.%s.%s.%s"' % (get_instance_id(), type_, env, app)
 
 
 def run_puppet():
-    return 'puppet agent --test --pluginsync --certname $(curl -s "http://169.254.169.254/latest/meta-data/instance-id")'
+    return 'puppet agent --test --pluginsync --certname %s' % get_instance_id()

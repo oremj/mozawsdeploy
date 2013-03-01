@@ -188,7 +188,7 @@ def create_server(name, app, server_type, env, ami,
                                                   'app-packr', 'argparse',
                                                   'virtualenv']),
                     gen_user_data.add_host(config.puppet_ip, 'puppet'),
-                    gen_user_data.set_hostname(name),
+                    gen_user_data.set_hostname(server_type, env, app),
                     gen_user_data.run_puppet()]
         userdata = "\n".join(userdata)
 
