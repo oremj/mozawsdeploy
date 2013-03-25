@@ -181,7 +181,9 @@ def create_server(name, app, server_type, env, ami,
 
     if not userdata:
         userdata = [gen_user_data.init(),
+                    gen_user_data.yum_clean(),
                     gen_user_data.yum_install(['puppet', 'git']),
+                    gen_user_data.yum_upgrade(),
                     gen_user_data.easy_install('pip'),
                     gen_user_data.pyrepo_install(['supervisor', 'virtualenv']),
                     gen_user_data.pyrepo_install(['supervisor', 'requests',
@@ -189,7 +191,8 @@ def create_server(name, app, server_type, env, ami,
                                                   'virtualenv']),
                     gen_user_data.add_host(config.puppet_ip, 'puppet'),
                     gen_user_data.set_hostname(server_type, env, app),
-                    gen_user_data.run_puppet()]
+                    gen_user_data.run_puppet(),
+                    gen_user_data.reboot_host()]
         userdata = "\n".join(userdata)
 
     c = get_connection()

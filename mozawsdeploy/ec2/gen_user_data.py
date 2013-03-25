@@ -12,6 +12,14 @@ def yum_install(pkgs):
     return '/usr/bin/yum -y install %s' % ' '.join(pkgs)
 
 
+def yum_clean():
+    return '/usr/bin/yum clean all'
+
+
+def yum_upgrade():
+    return '/usr/bin/yum -y update'
+
+
 def easy_install(pkg):
     return '/usr/bin/easy_install ' + pkg
 
@@ -31,3 +39,7 @@ def set_hostname(type_, env, app):
 
 def run_puppet():
     return 'puppet agent --test --pluginsync --certname %s' % get_instance_id()
+
+
+def reboot_host():
+    return 'reboot'
