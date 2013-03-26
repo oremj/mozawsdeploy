@@ -4,7 +4,13 @@ import re
 from boto.ec2 import connect_to_region, elb
 
 from . import gen_user_data
-from .. import config
+from .. import config, configure
+
+configure()
+
+DEFAULT_FILTERS = {'vpc-id': config.vpc_id,
+                   'tag:Env': config.env,
+                   'tag:App': config.app}
 
 
 def get_connection():
@@ -44,13 +50,12 @@ def prefix_instance_names(instance_ids, prefix):
 
 
 def get_vpc_instances():
-    filters = {'vpc-id': config.vpc_id}
-    return get_instances(filters=filters)
+    return get_instances(filters=DEFAULT_FILTERS)
 
 
 def get_instances_by_tags(tags):
     """tags should be a dict in the format {'tag': 'value'}"""
-    filters = {'vpc-id': config.vpc_id}
+    filters = DEFAULT_FILTERS.copy()
     for tag, val in tags.iteritems():
         filters['tag:%s' % tag] = val
 
