@@ -29,7 +29,8 @@ def print_instances():
             print inst_type
             cur_type = inst_type
 
-        print "\t%s" % instance.private_ip_address
+        print "\t%s (%s)" % (instance.private_ip_address,
+                             ", ".join([g.name for g in instance.groups]))
 
 
 @task
