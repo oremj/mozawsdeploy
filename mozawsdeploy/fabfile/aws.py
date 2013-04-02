@@ -164,7 +164,7 @@ def deploy_instances_and_wait(create_instance, lb_name, ref,
                               count, wait_timeout):
     """create_instance must return a list of instances
        and take a ref and count"""
-    instances = create_instance(release_id=ref, count=count)
+    instances = create_instance(count=count)
 
     for i in instances:
         i.add_tag('Release', ref)
