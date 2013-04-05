@@ -11,7 +11,7 @@ def create_node_yaml(fqdn):
     i = get_instance(instance_ids=[fqdn])
     if not i:
         return ''
-    tclass = '%s-private::%s::%s' % (i.tags['App'],
+    tclass = '%s_private::%s::%s' % (i.tags['App'],
                                      i.tags['Type'], i.tags['Env'])
     data = {'classes': [escape(tclass)]}
     data['parameters'] = {'ec2_app': escape(i.tags['App']),
