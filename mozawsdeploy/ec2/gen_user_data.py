@@ -37,8 +37,8 @@ def set_hostname(type_, env, app):
     return 'hostname "%s.%s.%s.%s"' % (get_instance_id(), type_, env, app)
 
 
-def run_puppet():
-    return 'puppet agent --test --pluginsync --certname %s' % get_instance_id()
+def run_puppet(puppet_host):
+    return 'puppet agent --test --pluginsync --certname "%s" --server "%s"' % (get_instance_id(), puppet_host)
 
 
 def reboot_host():

@@ -195,10 +195,8 @@ def create_server(name, app, server_type, env, ami,
                     gen_user_data.pyrepo_install(['supervisor', 'requests',
                                                   'app-packr', 'argparse',
                                                   'virtualenv']),
-                    gen_user_data.add_host(config.puppet_ip, 'puppet'),
-                    gen_user_data.add_host(config.admin_ip, 'admin'),
                     gen_user_data.set_hostname(server_type, env, app),
-                    gen_user_data.run_puppet(),
+                    gen_user_data.run_puppet(config.puppet_host),
                     gen_user_data.reboot_host()]
         userdata = "\n".join(userdata)
 
