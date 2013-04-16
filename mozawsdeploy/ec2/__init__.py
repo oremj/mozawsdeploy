@@ -68,7 +68,7 @@ def get_instances_by_lb(lb_name):
 
     instance_states = elb_conn.describe_instance_health(lb_name)
 
-    return get_instances(instance_ids=[i.instance_id 
+    return get_instances(instance_ids=[i.instance_id
                                        for i in instance_states])
 
 
@@ -111,7 +111,7 @@ def create_security_policy(sec_policy, app, env):
         security_groups.append(SecurityGroup(group, all_ingress))
 
     create_security_groups(security_groups, app, env)
-        
+
 
 
 def create_security_groups(security_groups, app, env):
@@ -177,7 +177,8 @@ def get_instance(instance_ids=None, filters=None):
 
 def create_server(name, app, server_type, env, ami,
                   security_groups=None, userdata=None,
-                  count=1, key_name=None, subnet_id=None):
+                  count=1, key_name=None, subnet_id=None,
+                  instance_type=None):
 
     if security_groups:
         security_group_ids = get_security_group_ids(security_groups)
@@ -203,6 +204,7 @@ def create_server(name, app, server_type, env, ami,
     c = get_connection()
     res = c.run_instances(ami, key_name=key_name, min_count=count,
                           max_count=count,
+                          instance_type=instance_type,
                           security_group_ids=security_group_ids,
                           user_data=userdata, subnet_id=subnet_id)
 

@@ -122,6 +122,7 @@ def create_server(server_type, ami=AMAZON_AMI,
     env = config.env
     instances = ec2.create_server(name='%s.%s.%s' % (app, env, server_type),
                                   server_type=server_type,
+                                  instance_type=instance_type,
                                   env=env, app=app, ami=ami,
                                   count=count, subnet_id=subnet_id,
                                   security_groups=['%s-base-%s' % (app, env),
