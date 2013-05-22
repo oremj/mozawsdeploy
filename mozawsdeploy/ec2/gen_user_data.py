@@ -17,7 +17,7 @@ def yum_clean():
 
 
 def yum_upgrade():
-    return '/usr/bin/yum -y update'
+    return '/usr/bin/yum -y update --disablerepo=puppetlabs-*'
 
 
 def easy_install(pkg):
