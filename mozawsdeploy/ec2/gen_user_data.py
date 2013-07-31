@@ -25,7 +25,7 @@ def easy_install(pkg):
 
 
 def pyrepo_install(pkgs):
-    return ('/usr/bin/pip install -U --no-index -f '
+    return ('/usr/bin/pip install --pre -U --no-index -f '
             'https://pyrepo.addons.mozilla.org/ %s' % ' '.join(pkgs))
 
 
